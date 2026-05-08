@@ -29,7 +29,6 @@ pyperclip==1.9.0
 PyRect==0.2.0
 PyScreeze==1.0.1
 pyserial==3.5
-PySimpleGUI==5.0.7
 PySocks==1.7.1
 python-xlib==0.33
 python3-xlib==0.15
