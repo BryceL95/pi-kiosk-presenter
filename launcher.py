@@ -1,8 +1,14 @@
-import subprocess
 import os
+import subprocess
 import time
+import sys
 
 BASE_DIR = "/home/BryceL/pi-kiosk-presenter"
+
+VENV_PYTHON = os.path.join(BASE_DIR, "venv/bin/python")
+PRESENTER = os.path.join(BASE_DIR, "presenter.py")
+REQUIREMENTS = os.path.join(BASE_DIR, "requirements.txt")
+
 
 def update_repo():
     print("Checking for updates...")
@@ -22,33 +28,35 @@ def update_repo():
 
 
 def install_requirements():
-    subprocess.run(
-        [
-            f"{BASE_DIR}/venv/bin/pip",
-            "install",
-            "-r",
-            "requirements.txt"
-        ],
-        cwd=BASE_DIR
-    )
+    if os.path.exists(REQUIREMENTS):
+        print("Installing requirements...")
+
+        subprocess.run(
+            [VENV_PYTHON, "-m", "pip", "install", "-r", REQUIREMENTS],
+            cwd=BASE_DIR
+        )
 
 
-def start_app():
-    subprocess.Popen(
-        [f"{BASE_DIR}/venv/bin/python", "presenter.py"],
-        cwd=BASE_DIR
+def start_presenter():
+    print("Starting presenter...")
+
+    # IMPORTANT FIX:
+    # Replace launcher process entirely with presenter using venv Python
+    os.execv(
+        VENV_PYTHON,
+        [VENV_PYTHON, PRESENTER]
     )
 
 
 def main():
     update_repo()
 
-    # Optional:
+    # Optional but recommended if you're actively developing
     install_requirements()
 
-    time.sleep(2)
+    time.sleep(1)
 
-    start_app()
+    start_presenter()
 
 
 if __name__ == "__main__":
