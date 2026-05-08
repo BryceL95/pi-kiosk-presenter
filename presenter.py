@@ -60,7 +60,7 @@ def get_local_ip():
         s.close()
 
 DEVICE_ID_FILE = "/home/BryceL/deviceID.txt"
-DEVICE_FW = 1.0
+DEVICE_FW = 1.1
 TYPE = "presenter"
 DEVICE_HW = get_device_model()
 DEVICE_ID = get_or_create_device_id()
