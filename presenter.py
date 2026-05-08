@@ -60,7 +60,7 @@ def get_local_ip():
         s.close()
 
 DEVICE_ID_FILE = "/home/BryceL/deviceID.txt"
-DEVICE_FW = 1.2
+DEVICE_FW = 1.3
 TYPE = "presenter"
 DEVICE_HW = get_device_model()
 DEVICE_ID = get_or_create_device_id()
@@ -105,6 +105,12 @@ def reloadPage():
     driver.get(PresenterUrl)
     driver.execute_script("document.body.style.cursor = 'none';")
 
+def CheckSettings(setting, default):
+    if SettingsParsed and setting in SettingsParsed:
+        return SettingsParsed[setting]
+    else:
+        return default
+    
 def rotate_screen(orientation):
     print("orientation", orientation)
     try:
@@ -118,15 +124,20 @@ def rotate_screen(orientation):
     except subprocess.CalledProcessError as e:
         print(f"Error rotating screen: {e}")
 
+def CheckScreenRotation():
+    global LastRotation
+    rotation = CheckSettings("ScreenRotation", "normal")
+    print("rotation", rotation)
+    print("LastRotation", LastRotation)
+
+    if rotation != LastRotation:
+        rotate_screen(rotation)
+        LastRotation = rotation
+
 # First boot, push status then get settings
 PushStatus()
+CheckScreenRotation()
 time.sleep(0.5)
-
-def CheckSettings(setting, default):
-    if SettingsParsed and setting in SettingsParsed:
-        return SettingsParsed[setting]
-    else:
-        return default
 
 while True:
     print("SettingsCount", SettingsCount)
@@ -134,13 +145,8 @@ while True:
     if SettingsCount == 10:
         SettingsCount = 0
         PushStatus()
+        CheckScreenRotation()
         time.sleep(0.5)
-
-        rotation = CheckSettings("ScreenRotation", "normal")
-
-        if rotation != LastRotation:
-            rotate_screen(rotation);
-            LastRotation = rotation;
 
     # PresenterUrl = CheckSettings(
     #     "PresenterUrl", "https://rrdev.brycelongacre.com/kiosk/default.html"
