@@ -2,8 +2,9 @@ import os
 import subprocess
 import time
 import sys
+import shutil
 
-BASE_DIR = "/home/BryceL/pi-kiosk-presenter"
+BASE_DIR = "/home/brycel/pi-kiosk-presenter"
 
 VENV_PYTHON = os.path.join(BASE_DIR, "venv/bin/python")
 PRESENTER = os.path.join(BASE_DIR, "presenter.py")
@@ -48,11 +49,46 @@ def start_presenter():
     )
 
 
+def ensure_chromium_installed():
+    chromium_exists = (
+        shutil.which("chromium") or
+        shutil.which("chromium-browser")
+    )
+
+    chromedriver_exists = shutil.which("chromedriver")
+
+    if chromium_exists and chromedriver_exists:
+        print("Chromium already installed")
+        return
+
+    print("Chromium not found. Installing...")
+
+    subprocess.run(
+        ["sudo", "apt", "update"],
+        check=True
+    )
+
+    subprocess.run(
+        [
+            "sudo",
+            "apt",
+            "install",
+            "-y",
+            "chromium",
+            "chromium-driver"
+        ],
+        check=True
+    )
+
+    print("Chromium installation complete")
+
 def main():
     update_repo()
 
     # Optional but recommended if you're actively developing
     install_requirements()
+
+    ensure_chromium_installed()
 
     time.sleep(1)
 
