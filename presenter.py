@@ -61,7 +61,7 @@ def get_local_ip():
         s.close()
 
 DEVICE_ID_FILE = "deviceID.txt"
-DEVICE_FW = "1.3.2"
+DEVICE_FW = "1.3.3"
 TYPE = "presenter"
 DEVICE_HW = get_device_model()
 DEVICE_ID = get_or_create_device_id()
