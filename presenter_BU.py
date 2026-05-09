@@ -10,11 +10,10 @@ from selenium import webdriver
 from selenium.webdriver.common.keys import Keys
 from selenium.webdriver.chrome.options import Options
 from datetime import datetime, timezone
-from gpiozero import Button
 
+import os
 os.environ['GPIOZERO_PIN_FACTORY'] = 'lgpio'
-os.environ["DISPLAY"] = ":0"
-
+from gpiozero import Button
 
 button = Button(17)
 
@@ -61,7 +60,7 @@ def get_local_ip():
         s.close()
 
 DEVICE_ID_FILE = "/home/BryceL/deviceID.txt"
-DEVICE_FW = "1.3.2"
+DEVICE_FW = 1.3
 TYPE = "presenter"
 DEVICE_HW = get_device_model()
 DEVICE_ID = get_or_create_device_id()
@@ -79,12 +78,8 @@ SettingsParsed = []
 PresenterStatus = False
 SettingsCount = 0
 CurrentURL = ""
-CurrentURL2 = ""
 LastRotation = "normal"
-LastRotation2 = "normal"
 
-# output = subprocess.check_output("xrandr", shell=True).decode()
-# print(output)
 
 def PushStatus():
     global SettingsParsed
@@ -104,28 +99,11 @@ def PushStatus():
     except:
         print("GET Status error")
 
-def get_connected_outputs():
-    result = subprocess.check_output("xrandr", shell=True).decode()
-    
-    connected = []
-    for line in result.splitlines():
-        if " connected" in line:
-            name = line.split()[0]
-            connected.append(name)
-    
-    return connected
-
-screens = get_connected_outputs()
-print("Connected screens:", screens)
-
 def reloadPage():
-    print("Manual Browser Reload")
-    driver1.get(PresenterUrl)
-    driver1.execute_script("document.body.style.cursor = 'none';")
-
-    if len(screens) >= 2:
-        driver2.get(PresenterUrl2)
-        driver2.execute_script("document.body.style.cursor = 'none';")
+    print("Browser Reload")
+    CurrentURL = PresenterUrl
+    driver.get(PresenterUrl)
+    driver.execute_script("document.body.style.cursor = 'none';")
 
 def CheckSettings(setting, default):
     if SettingsParsed and setting in SettingsParsed:
@@ -133,17 +111,12 @@ def CheckSettings(setting, default):
     else:
         return default
     
-def rotate_screen(orientation, screen):
+def rotate_screen(orientation):
     print("orientation", orientation)
-    print("screen", screen)
     try:
         # Determine the display name (usually HDMI-1 or DSI-1)
         # You can find yours by running 'xrandr' in the terminal
-        display_name = "HDMI-1"
-        if screen == 1:
-            display_name = "HDMI-1"
-        elif screen == 2:
-            display_name = "HDMI-2"
+        display_name = "HDMI-1" 
         
         command = ["xrandr", "--output", display_name, "--rotate", orientation]
         subprocess.run(command, check=True)
@@ -153,22 +126,13 @@ def rotate_screen(orientation, screen):
 
 def CheckScreenRotation():
     global LastRotation
-    global LastRotation2
     rotation = CheckSettings("ScreenRotation", "normal")
-    rotation2 = CheckSettings("ScreenRotation2", "normal")
     print("rotation", rotation)
     print("LastRotation", LastRotation)
 
-    print("rotation", rotation2)
-    print("LastRotation", LastRotation2)
-
     if rotation != LastRotation:
-        rotate_screen(rotation, 1)
+        rotate_screen(rotation)
         LastRotation = rotation
-
-    if rotation2 != LastRotation2:
-        rotate_screen(rotation2, 2)
-        LastRotation2 = rotation2
 
 # First boot, push status then get settings
 PushStatus()
@@ -184,67 +148,39 @@ while True:
         CheckScreenRotation()
         time.sleep(0.5)
 
-    PresenterUrl = CheckSettings(
-        "PresenterUrl", "https://rrdev.brycelongacre.com/kiosk/default.html"
-    )
+    # PresenterUrl = CheckSettings(
+    #     "PresenterUrl", "https://rrdev.brycelongacre.com/kiosk/default.html"
+    # )
 
-    PresenterUrl2 = CheckSettings(
-        "PresenterUrl2", "https://rrdev.brycelongacre.com/kiosk/default.html"
+    PresenterUrl = CheckSettings(
+        "PresenterUrl", "http://192.168.2.188/ui/presenter/e2da064e-b0e7-443c-9441-5ff56aea3d69"
     )
 
     print(PresenterUrl)
-    print(PresenterUrl2)
 
     if PresenterStatus == False:
         print("Open browser...")
         CurrentURL = PresenterUrl
-        CurrentURL2 = PresenterUrl2
         PresenterStatus = True
 
-        options1 = webdriver.ChromeOptions()
-        options1.add_argument("--kiosk")
-        options1.add_argument("--window-position=0,0")
-        options1.add_argument("--window-size=1920,1080")
-        options1.add_argument("start-maximized")
-        options1.add_argument("--deny-permission-prompts")
-        options1.add_argument("disable-infobars")
-        options1.add_argument("--disable-blink-features=AutomationControlled")
-        options1.add_experimental_option("excludeSwitches", ["enable-automation"])
-        options1.add_experimental_option("useAutomationExtension", False)
+        chrome_options = Options()
+        # chrome_options.add_argument("--ozone-platform=x11")
+        chrome_options.add_argument("--kiosk")
+        chrome_options.add_argument("start-maximized")
+        chrome_options.add_argument("--deny-permission-prompts")
+        chrome_options.add_argument("disable-infobars")
+        chrome_options.add_experimental_option("useAutomationExtension", False)
+        chrome_options.add_experimental_option("excludeSwitches", ["enable-automation"])
 
-        driver1 = webdriver.Chrome(options=options1)
-        driver1.get(PresenterUrl)
-        driver1.execute_script("document.body.style.cursor = 'none';")
-
-        if len(screens) >= 2:
-            print("Dual screens")
-            options2 = webdriver.ChromeOptions()
-            options2.add_argument("--kiosk")
-            options2.add_argument("--window-position=1920,0")
-            options2.add_argument("--window-size=1920,1080")
-            options2.add_argument("start-maximized")
-            options2.add_argument("--deny-permission-prompts")
-            options2.add_argument("disable-infobars")
-            options2.add_argument("--disable-blink-features=AutomationControlled")
-            options2.add_experimental_option("excludeSwitches", ["enable-automation"])
-            options2.add_experimental_option("useAutomationExtension", False)
-
-            driver2 = webdriver.Chrome(options=options2)
-            driver2.get(PresenterUrl2)
-            driver2.execute_script("document.body.style.cursor = 'none';")
+        driver = webdriver.Chrome(options=chrome_options)
+        driver.get(PresenterUrl)
+        driver.execute_script("document.body.style.cursor = 'none';")
 
     elif PresenterUrl != CurrentURL:
-        print("New url - Browser Reload")
+        print("Browser Reload")
         CurrentURL = PresenterUrl
-
-        driver1.get(PresenterUrl)
-        driver1.execute_script("document.body.style.cursor = 'none';")
-    elif PresenterUrl2 != CurrentURL2 and len(screens) >= 2:
-        print("New url - Browser Reload Screen 2")
-        CurrentURL2 = PresenterUrl2
-
-        driver2.get(PresenterUrl2)
-        driver2.execute_script("document.body.style.cursor = 'none';")
+        driver.get(PresenterUrl)
+        driver.execute_script("document.body.style.cursor = 'none';")
     else:
         print("Browser running")
         time.sleep(1)
