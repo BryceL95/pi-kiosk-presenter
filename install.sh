@@ -68,7 +68,7 @@ echo "=============================="
 echo "Creating Python virtual environment..."
 echo "=============================="
 
-cd /home/pi/kiosk
+cd /home/brycel/pi-kiosk-presenter
 
 python3 -m venv venv
 
