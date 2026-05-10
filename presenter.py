@@ -14,7 +14,9 @@ from gpiozero import Button
 
 os.environ['GPIOZERO_PIN_FACTORY'] = 'lgpio'
 os.environ["DISPLAY"] = ":0"
-
+subprocess.run(["xset", "s", "off"])
+subprocess.run(["xset", "-dpms"])
+subprocess.run(["xset", "s", "noblank"])
 
 button = Button(17)
 
