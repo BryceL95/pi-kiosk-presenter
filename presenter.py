@@ -53,6 +53,14 @@ def get_or_create_device_id():
         with open(DEVICE_ID_FILE, "w") as f:
             f.write(deviceID)
         return deviceID
+    
+
+def get_version():
+    if os.path.exists("version.txt"):
+        with open("version.txt", "r") as f:
+            return f.read().strip()
+    else:
+        return "0.0.0"
 
 def get_local_ip():
     s = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
@@ -63,7 +71,7 @@ def get_local_ip():
         s.close()
 
 DEVICE_ID_FILE = "deviceID.txt"
-DEVICE_FW = "1.3.3"
+DEVICE_FW = get_version()
 TYPE = "presenter"
 DEVICE_HW = get_device_model()
 DEVICE_ID = get_or_create_device_id()
