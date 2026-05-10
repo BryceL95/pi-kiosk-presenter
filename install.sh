@@ -85,18 +85,4 @@ echo "RTC setup complete."
 echo "Reboot required."
 echo "=============================="
 
-echo "Configuring display power settings..."
-
-AUTOSTART_FILE="$HOME/.config/lxsession/LXDE-pi/autostart"
-
-mkdir -p "$HOME/.config/lxsession/LXDE-pi"
-
-# Ensure file exists
-touch "$AUTOSTART_FILE"
-
-# Add xset settings if not already present
-grep -qxF "@xset s off" "$AUTOSTART_FILE" || echo "@xset s off" >> "$AUTOSTART_FILE"
-grep -qxF "@xset -dpms" "$AUTOSTART_FILE" || echo "@xset -dpms" >> "$AUTOSTART_FILE"
-grep -qxF "@xset s noblank" "$AUTOSTART_FILE" || echo "@xset s noblank" >> "$AUTOSTART_FILE"
-
 sudo reboot
