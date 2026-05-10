@@ -9,13 +9,21 @@ BASE_DIR = "/home/brycel/pi-kiosk-presenter"
 VENV_PYTHON = os.path.join(BASE_DIR, "venv/bin/python")
 PRESENTER = os.path.join(BASE_DIR, "presenter.py")
 REQUIREMENTS = os.path.join(BASE_DIR, "requirements.txt")
+VERSION_FILE = os.path.join(BASE_DIR, "version.txt")
 
+
+def get_version():
+    if not os.path.exists(VERSION_FILE):
+        return "unknown"
+
+    with open(VERSION_FILE, "r") as f:
+        return f.read().strip()
 
 def update_repo():
-    print("Checking for updates...")
+    print("Checking for updates on stable branch...")
 
     result = subprocess.run(
-        ["git", "pull"],
+        ["git", "pull", "origin", "stable"],
         cwd=BASE_DIR,
         capture_output=True,
         text=True
@@ -83,7 +91,14 @@ def ensure_chromium_installed():
     print("Chromium installation complete")
 
 def main():
+    before = get_version()
+
     update_repo()
+
+    after = get_version()
+
+    print(f"Version Before: {before}")
+    print(f"Version After:  {after}")
 
     # Optional but recommended if you're actively developing
     install_requirements()
