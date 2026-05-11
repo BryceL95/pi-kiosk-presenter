@@ -205,22 +205,35 @@ while True:
     print(PresenterUrl)
     print(PresenterUrl2)
 
+    # screen 1 options
+    options1 = webdriver.ChromeOptions()
+    options1.add_argument("--kiosk")
+    options1.add_argument("--window-position=0,0")
+    options1.add_argument("--window-size=1920,1080")
+    options1.add_argument("start-maximized")
+    options1.add_argument("--deny-permission-prompts")
+    options1.add_argument("disable-infobars")
+    options1.add_argument("--disable-blink-features=AutomationControlled")
+    options1.add_experimental_option("excludeSwitches", ["enable-automation"])
+    options1.add_experimental_option("useAutomationExtension", False)
+
+    # screen 2 options
+    options2 = webdriver.ChromeOptions()
+    options2.add_argument("--kiosk")
+    options2.add_argument("--window-position=1920,0")
+    options2.add_argument("--window-size=1920,1080")
+    options2.add_argument("start-maximized")
+    options2.add_argument("--deny-permission-prompts")
+    options2.add_argument("disable-infobars")
+    options2.add_argument("--disable-blink-features=AutomationControlled")
+    options2.add_experimental_option("excludeSwitches", ["enable-automation"])
+    options2.add_experimental_option("useAutomationExtension", False)
+
     if PresenterStatus == False:
         print("Open browser...")
         CurrentURL = PresenterUrl
         CurrentURL2 = PresenterUrl2
         PresenterStatus = True
-
-        options1 = webdriver.ChromeOptions()
-        options1.add_argument("--kiosk")
-        options1.add_argument("--window-position=0,0")
-        options1.add_argument("--window-size=1920,1080")
-        options1.add_argument("start-maximized")
-        options1.add_argument("--deny-permission-prompts")
-        options1.add_argument("disable-infobars")
-        options1.add_argument("--disable-blink-features=AutomationControlled")
-        options1.add_experimental_option("excludeSwitches", ["enable-automation"])
-        options1.add_experimental_option("useAutomationExtension", False)
 
         driver1 = webdriver.Chrome(options=options1)
         driver1.get(PresenterUrl)
@@ -228,17 +241,7 @@ while True:
 
         if len(screens) >= 2:
             print("Dual screens")
-            options2 = webdriver.ChromeOptions()
-            options2.add_argument("--kiosk")
-            options2.add_argument("--window-position=1920,0")
-            options2.add_argument("--window-size=1920,1080")
-            options2.add_argument("start-maximized")
-            options2.add_argument("--deny-permission-prompts")
-            options2.add_argument("disable-infobars")
-            options2.add_argument("--disable-blink-features=AutomationControlled")
-            options2.add_experimental_option("excludeSwitches", ["enable-automation"])
-            options2.add_experimental_option("useAutomationExtension", False)
-
+            
             driver2 = webdriver.Chrome(options=options2)
             driver2.get(PresenterUrl2)
             driver2.execute_script("document.body.style.cursor = 'none';")
@@ -247,12 +250,14 @@ while True:
         print("New url - Browser Reload")
         CurrentURL = PresenterUrl
 
+        driver1 = webdriver.Chrome(options=options1)
         driver1.get(PresenterUrl)
         driver1.execute_script("document.body.style.cursor = 'none';")
     elif PresenterUrl2 != CurrentURL2 and len(screens) >= 2:
         print("New url - Browser Reload Screen 2")
         CurrentURL2 = PresenterUrl2
 
+        driver2 = webdriver.Chrome(options=options2)
         driver2.get(PresenterUrl2)
         driver2.execute_script("document.body.style.cursor = 'none';")
     else:
