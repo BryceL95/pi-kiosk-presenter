@@ -4,7 +4,7 @@ import time
 import sys
 import shutil
 
-BASE_DIR = "/home/brycel/pi-kiosk-presenter"
+BASE_DIR = Path(__file__).resolve().parent
 
 VENV_PYTHON = os.path.join(BASE_DIR, "venv/bin/python")
 PRESENTER = os.path.join(BASE_DIR, "presenter.py")
