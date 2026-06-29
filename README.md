@@ -9,8 +9,10 @@ Clone the repository:
 git clone https://github.com/BryceL95/pi-kiosk-presenter.git
 ```
 
-install.sh will run a few configurations to get the real-time clock set up and the virtual environment created.
-
+Run the following command to configure the real-time clock and create the virtual environment.
+```
+bash install.sh
+```
 
 ## Hardware
 Recommended hardware: Raspberry Pi 4 or Pi 5.
@@ -21,3 +23,6 @@ It is recommended to add the DS3231 Real Time Clock module so the Pi can keep ac
 ![Image of DS3231](/images/DS3231.jpg)
 
 A button can be added between GPIO 17 (pin 11 on the Pi) and Ground. This button will reload the browser when pressed.
+
+This [Raspberry Pi 4 Case](https://www.amazon.com/dp/B07Y7W3GFH?ref_=ppx_hzsearch_conn_dt_b_fed_asin_title_2) can be used with the [xyz 3D File](/assets/3D_Files/xyz.stl) to easily add a button to Pi4.
+
