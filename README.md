@@ -33,6 +33,8 @@ A button can be added between GPIO 17 (pin 11 on the Pi) and Ground. This button
 
 This [Raspberry Pi 4 Case](https://www.amazon.com/dp/B07Y7W3GFH?ref_=ppx_hzsearch_conn_dt_b_fed_asin_title_2) can be used with the [Kiosk Pi Case.STL](</assets/3D_Files/Kiosk Pi Case.STL>) to add a button to Pi4 easily.
 
+![Pi4 Case Top](/assets/images/CaseTop.png)
+
 ## How to configure kiosk settings
 Navigate to [rrdev.brycelongacre.com/tools-new](https://rrdev.brycelongacre.com/tools-new/) and register an account. Once registered, login and navigate to Kiosk on the left. Here you will see a list of all Kiosk devices that have connected to your account. Selecting Settings will open a window where you can change settings for the device.
 

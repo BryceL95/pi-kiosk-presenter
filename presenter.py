@@ -60,7 +60,7 @@ def get_customer_id():
             return f.read().strip()
     else:
         customerID = "0"
-        with open(DEVICE_ID_FILE, "w") as f:
+        with open(CUSTOMER_ID_FILE, "w") as f:
             f.write(customerID)
         return customerID   
 
