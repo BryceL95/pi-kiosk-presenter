@@ -4,9 +4,9 @@ import time
 import sys
 import shutil
 
-BASE_DIR = Path(__file__).resolve().parent
+BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 
-VENV_PYTHON = os.path.join(BASE_DIR, "venv/bin/python")
+VENV_PYTHON = os.path.join(BASE_DIR, "venv", "bin", "python")
 PRESENTER = os.path.join(BASE_DIR, "presenter.py")
 REQUIREMENTS = os.path.join(BASE_DIR, "requirements.txt")
 VERSION_FILE = os.path.join(BASE_DIR, "version.txt")
@@ -49,7 +49,6 @@ def install_requirements():
 def start_presenter():
     print("Starting presenter...")
 
-    # IMPORTANT FIX:
     # Replace launcher process entirely with presenter using venv Python
     os.execv(
         VENV_PYTHON,
@@ -100,7 +99,6 @@ def main():
     print(f"Version Before: {before}")
     print(f"Version After:  {after}")
 
-    # Optional but recommended if you're actively developing
     install_requirements()
 
     ensure_chromium_installed()
