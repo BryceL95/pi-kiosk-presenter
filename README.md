@@ -14,6 +14,13 @@ Run the following command to install all necessary packages, enable i2C, configu
 bash install.sh
 ```
 
+You need to set your customer ID in order for your device to appear within your account online for configuration. To do so, SSH into the pi and run the following commands to edit the customerID.txt file. Enter your customer ID in the file, save, then restart the Pi.
+
+```
+cd <repository path>
+sudo nano customerID.txt
+```
+
 ## Hardware
 Recommended hardware: Raspberry Pi 4 or Pi 5.
 
@@ -26,3 +33,5 @@ A button can be added between GPIO 17 (pin 11 on the Pi) and Ground. This button
 
 This [Raspberry Pi 4 Case](https://www.amazon.com/dp/B07Y7W3GFH?ref_=ppx_hzsearch_conn_dt_b_fed_asin_title_2) can be used with the [Kiosk Pi Case.STL](</assets/3D_Files/Kiosk Pi Case.STL>) to add a button to Pi4 easily.
 
+## How to configure kiosk settings
+Navigate to [rrdev.brycelongacre.com/tools-new](https://rrdev.brycelongacre.com/tools-new/) and register an account. Once registered, login and navigate to Kiosk on the left.
