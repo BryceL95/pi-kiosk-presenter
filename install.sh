@@ -16,6 +16,20 @@ echo "Home directory: $TARGET_HOME"
 echo "Project dir:    $PROJECT_DIR"
 
 echo "=============================="
+echo "Customer ID Setup"
+echo "=============================="
+
+read -rp "Enter Customer ID: " CUSTOMER_ID
+
+if [ -z "$CUSTOMER_ID" ]; then
+    echo "Customer ID cannot be empty."
+    exit 1
+fi
+
+echo "$CUSTOMER_ID" > "$PROJECT_DIR/customerID.txt"
+echo "Customer ID saved to $PROJECT_DIR/customerID.txt"
+
+echo "=============================="
 echo "Updating packages..."
 echo "=============================="
 
