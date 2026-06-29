@@ -2,6 +2,19 @@
 
 set -e
 
+# ==============================
+# Resolve user and paths dynamically
+# ==============================
+# Works whether the script is run as the normal user (with sudo used
+# per-command, as in the rest of this script) or invoked with sudo.
+TARGET_USER="${SUDO_USER:-$(whoami)}"
+TARGET_HOME="$(getent passwd "$TARGET_USER" | cut -d: -f6)"
+PROJECT_DIR="$TARGET_HOME/pi-kiosk-presenter"
+
+echo "Target user:    $TARGET_USER"
+echo "Home directory: $TARGET_HOME"
+echo "Project dir:    $PROJECT_DIR"
+
 echo "=============================="
 echo "Updating packages..."
 echo "=============================="
@@ -68,7 +81,7 @@ echo "=============================="
 echo "Creating Python virtual environment..."
 echo "=============================="
 
-cd /home/brycel/pi-kiosk-presenter
+cd "$PROJECT_DIR"
 
 python3 -m venv venv
 
@@ -80,23 +93,58 @@ if [ -f requirements.txt ]; then
     pip install -r requirements.txt
 fi
 
+deactivate
+
 echo "=============================="
 echo "RTC setup complete."
-echo "Reboot required."
 echo "=============================="
 
+echo "=============================="
 echo "Configuring display power settings..."
+echo "=============================="
 
-AUTOSTART_FILE="$HOME/.config/lxsession/LXDE-pi/autostart"
+AUTOSTART_FILE="$TARGET_HOME/.config/lxsession/LXDE-pi/autostart"
 
-mkdir -p "$HOME/.config/lxsession/LXDE-pi"
+mkdir -p "$TARGET_HOME/.config/lxsession/LXDE-pi"
 
 # Ensure file exists
 touch "$AUTOSTART_FILE"
 
-# Add xset settings if not already present
+# Add xset settings if not already present (keeps the screen from blanking)
 grep -qxF "@xset s off" "$AUTOSTART_FILE" || echo "@xset s off" >> "$AUTOSTART_FILE"
 grep -qxF "@xset -dpms" "$AUTOSTART_FILE" || echo "@xset -dpms" >> "$AUTOSTART_FILE"
 grep -qxF "@xset s noblank" "$AUTOSTART_FILE" || echo "@xset s noblank" >> "$AUTOSTART_FILE"
+
+echo "=============================="
+echo "Creating systemd service..."
+echo "=============================="
+
+SERVICE_FILE="/etc/systemd/system/kiosk.service"
+
+sudo tee "$SERVICE_FILE" > /dev/null <<EOF
+[Unit]
+Description=Kiosk
+After=network.target
+
+[Service]
+User=$TARGET_USER
+WorkingDirectory=$PROJECT_DIR
+Environment=HOME=$TARGET_HOME
+ExecStart=$PROJECT_DIR/venv/bin/python $PROJECT_DIR/launcher.py
+Restart=always
+RestartSec=5
+
+[Install]
+WantedBy=multi-user.target
+EOF
+
+echo "Wrote service file: $SERVICE_FILE"
+
+sudo systemctl daemon-reload
+sudo systemctl enable kiosk.service
+
+echo "=============================="
+echo "Setup complete. Reboot required."
+echo "=============================="
 
 sudo reboot

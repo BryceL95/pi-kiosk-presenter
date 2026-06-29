@@ -36,5 +36,12 @@ This [Raspberry Pi 4 Case](https://www.amazon.com/dp/B07Y7W3GFH?ref_=ppx_hzsearc
 ## How to configure kiosk settings
 Navigate to [rrdev.brycelongacre.com/tools-new](https://rrdev.brycelongacre.com/tools-new/) and register an account. Once registered, login and navigate to Kiosk on the left. Here you will see a list of all Kiosk devices that have connected to your account. Selecting Settings will open a window where you can change settings for the device.
 
+| Event Name        | Name of the event. Just used as a reference. Not used for anything on the Pi |
+|-------------------|------------------------------------------------------------------------------|
+| Presenter URL     | The URL to load on screen 1 of the Pi                                        |
+| Screen Rotation   | The rotation of screen 1                                                     |
+| Presenter URL 2   | The URL to load on screen 2 of the Pi                                        |
+| Screen Rotation 2 | The rotation of screen 2                                                     |
+
 ![Kiosk Settings](/assets/images/KioskSettings.png)
 

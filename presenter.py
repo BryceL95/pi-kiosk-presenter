@@ -205,11 +205,11 @@ while True:
         time.sleep(0.5)
 
     PresenterUrl = CheckSettings(
-        "PresenterUrl", "https://rrdev.brycelongacre.com/kiosk/default.html"
+        "PresenterUrl", "https://rrdev.brycelongacre.com/kiosk/"
     )
 
     PresenterUrl2 = CheckSettings(
-        "PresenterUrl2", "https://rrdev.brycelongacre.com/kiosk/default.html"
+        "PresenterUrl2", "https://rrdev.brycelongacre.com/kiosk/"
     )
 
     print(PresenterUrl)
