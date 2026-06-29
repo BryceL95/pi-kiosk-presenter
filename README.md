@@ -16,6 +16,8 @@ install.sh will run a few configurations to get the real-time clock set up and t
 Recommended hardware: Raspberry Pi 4 or Pi 5.
 
 It is recommended to add the DS3231 Real Time Clock module so the Pi can keep accurate time. This connects directly to the Pi using pins 1, 3, 5, 7, and 9.
+[Amazon Link - DS3231](https://www.amazon.com/dp/B08X4H3NBR?ref=ppx_yo2ov_dt_b_fed_asin_title&th=1)
 
 ![Image of DS3231](/images/DS3231.jpg)
 
+A button can be added between GPIO 17 (pin 11 on the Pi) and Ground. This button will reload the browser when pressed.
