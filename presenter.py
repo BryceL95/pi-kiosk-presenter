@@ -53,7 +53,16 @@ def get_or_create_device_id():
         with open(DEVICE_ID_FILE, "w") as f:
             f.write(deviceID)
         return deviceID
-    
+
+def get_customer_id():
+    if os.path.exists(CUSTOMER_ID_FILE):
+        with open(CUSTOMER_ID_FILE, "r") as f:
+            return f.read().strip()
+    else:
+        customerID = "0"
+        with open(DEVICE_ID_FILE, "w") as f:
+            f.write(customerID)
+        return customerID   
 
 def get_version():
     if os.path.exists("version.txt"):
@@ -71,11 +80,12 @@ def get_local_ip():
         s.close()
 
 DEVICE_ID_FILE = "deviceID.txt"
+CUSTOMER_ID_FILE = "customerID.txt"
 DEVICE_FW = get_version()
 TYPE = "presenter"
 DEVICE_HW = get_device_model()
 DEVICE_ID = get_or_create_device_id()
-USER_ID = 32178
+USER_ID = get_customer_id()
 LOCAL_IP = get_local_ip()
 
 print("DEVICE_FW:", DEVICE_FW)
