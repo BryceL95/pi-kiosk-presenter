@@ -158,9 +158,11 @@ def reloadPage():
         driver2.execute_script("document.body.style.cursor = 'none';")
 
 def CheckSettings(setting, default):
-    if SettingsParsed and setting in SettingsParsed:
+    if SettingsParsed and setting in SettingsParsed and SettingsParsed[setting] != "":
+        print(f"{setting}: ", SettingsParsed[setting])
         return SettingsParsed[setting]
     else:
+        print(f"{setting}: ", default)
         return default
     
 def rotate_screen(orientation, screen):
@@ -186,11 +188,6 @@ def CheckScreenRotation():
     global LastRotation2
     rotation = CheckSettings("ScreenRotation", "normal")
     rotation2 = CheckSettings("ScreenRotation2", "normal")
-    print("rotation", rotation)
-    print("LastRotation", LastRotation)
-
-    print("rotation", rotation2)
-    print("LastRotation", LastRotation2)
 
     if rotation != LastRotation:
         rotate_screen(rotation, 1)
@@ -208,12 +205,6 @@ def CheckResolution():
 
     resolution2 = CheckSettings("Resolution2", "1920x1080")
     resXY2 = resolution2.split("x")
-
-    print("resolution", resolution)
-    print("LastResolution", LastResolution)
-
-    print("resolution2", resolution2)
-    print("LastResolution2", LastResolution2)
 
     if resolution != LastResolution:
         set_resolution_x11(resXY[0], resXY[1], "HDMI-1")
@@ -239,17 +230,6 @@ while True:
         CheckResolution()
         time.sleep(0.5)
 
-    PresenterUrl = CheckSettings(
-        "PresenterUrl", "https://rrdev.brycelongacre.com/kiosk/"
-    )
-
-    PresenterUrl2 = CheckSettings(
-        "PresenterUrl2", "https://rrdev.brycelongacre.com/kiosk/"
-    )
-
-    print("PresenterUrl: ", PresenterUrl)
-    print("PresenterUrl2: ",PresenterUrl2)
-
     # screen 1 options
     options1 = webdriver.ChromeOptions()
     options1.add_argument("--kiosk")
@@ -273,6 +253,9 @@ while True:
     options2.add_argument("--disable-blink-features=AutomationControlled")
     options2.add_experimental_option("excludeSwitches", ["enable-automation"])
     options2.add_experimental_option("useAutomationExtension", False)
+
+    PresenterUrl = CheckSettings("PresenterUrl", "https://rrdev.brycelongacre.com/kiosk/")
+    PresenterUrl2 = CheckSettings("PresenterUrl2", "https://rrdev.brycelongacre.com/kiosk/")
 
     if PresenterStatus == False:
         print("Open browser...")
