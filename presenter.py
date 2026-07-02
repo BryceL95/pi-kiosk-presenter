@@ -200,7 +200,7 @@ def CheckScreenRotation():
 
 def CheckResolution():
     global LastResolution
-    resolution = CheckSettings("ScreenRotation", "normal")
+    resolution = CheckSettings("ScreenRotation", "1920x1080")
     resXY = resolution.split("x")
 
     if resolution != LastResolution:
