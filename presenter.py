@@ -78,8 +78,6 @@ def get_local_ip():
     finally:
         s.close()
 
-
-
 def set_resolution_x11(width, height):
     """
     Changes screen resolution on X11-based Raspberry Pi OS.
@@ -90,10 +88,6 @@ def set_resolution_x11(width, height):
         print(f"Resolution shifted to {width}x{height}")
     except subprocess.CalledProcessError as e:
         print(f"Failed to change resolution: {e}")
-
-# Example usage
-set_resolution_x11(1920, 1080)
-
 
 DEVICE_ID_FILE = "deviceID.txt"
 CUSTOMER_ID_FILE = "customerID.txt"
@@ -118,6 +112,7 @@ CurrentURL = ""
 CurrentURL2 = ""
 LastRotation = "normal"
 LastRotation2 = "normal"
+LastResolution = ""
 
 def PushStatus():
     global SettingsParsed
@@ -203,9 +198,19 @@ def CheckScreenRotation():
         rotate_screen(rotation2, 2)
         LastRotation2 = rotation2
 
+def CheckResolution():
+    global LastResolution
+    resolution = CheckSettings("ScreenRotation", "normal")
+    resXY = resolution.split("x")
+
+    if resolution != LastResolution:
+        set_resolution_x11(resXY[0], resXY[1])
+        LastResolution = resolution
+
 # First boot, push status then get settings
 PushStatus()
 CheckScreenRotation()
+CheckResolution()
 time.sleep(0.5)
 
 while True:
@@ -215,6 +220,7 @@ while True:
         SettingsCount = 0
         PushStatus()
         CheckScreenRotation()
+        CheckResolution()
         time.sleep(0.5)
 
     PresenterUrl = CheckSettings(
