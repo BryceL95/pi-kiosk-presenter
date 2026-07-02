@@ -78,11 +78,12 @@ def get_local_ip():
     finally:
         s.close()
 
-def set_resolution_x11(width, height):
+def set_resolution_x11(width, height, display_name):
     """
     Changes screen resolution on X11-based Raspberry Pi OS.
     """
-    command = f"xrandr --size {width}x{height}"
+    # command = f"xrandr --size {width}x{height}"
+    command = f"xrandr --output {display_name} --mode {width}x{height}"
     try:
         subprocess.run(command, shell=True, check=True)
         print(f"Resolution shifted to {width}x{height}")
@@ -113,6 +114,7 @@ CurrentURL2 = ""
 LastRotation = "normal"
 LastRotation2 = "normal"
 LastResolution = "1920x1080"
+LastResolution2 = "1920x1080"
 
 def PushStatus():
     global SettingsParsed
@@ -200,15 +202,26 @@ def CheckScreenRotation():
 
 def CheckResolution():
     global LastResolution
+    global LastResolution2
     resolution = CheckSettings("Resolution", "1920x1080")
     resXY = resolution.split("x")
+
+    resolution2 = CheckSettings("Resolution2", "1920x1080")
+    resXY2 = resolution2.split("x")
 
     print("resolution", resolution)
     print("LastResolution", LastResolution)
 
+    print("resolution2", resolution2)
+    print("LastResolution2", LastResolution2)
+
     if resolution != LastResolution:
-        set_resolution_x11(resXY[0], resXY[1])
+        set_resolution_x11(resXY[0], resXY[1], "HDMI-1")
         LastResolution = resolution
+
+    if resolution2 != LastResolution2:
+        set_resolution_x11(resXY2[0], resXY2[1], "HDMI-2")
+        LastResolution2 = resolution2
 
 # First boot, push status then get settings
 PushStatus()
