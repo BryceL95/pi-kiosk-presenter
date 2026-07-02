@@ -39,8 +39,10 @@ Log into [rrdev.brycelongacre.com/tools-new](https://rrdev.brycelongacre.com/too
 | Setting Name      | Description                                                                  |
 |-------------------|------------------------------------------------------------------------------|
 | Event Name        | Name of the event. Just used as a reference. Not used for anything on the Pi |
+| Resolution        | The resolution of screen 2                                                   |
 | Presenter URL     | The URL to load on screen 1 of the Pi                                        |
 | Screen Rotation   | The rotation of screen 1                                                     |
+| Resolution 2      | The resolution of screen 2                                                   |
 | Presenter URL 2   | The URL to load on screen 2 of the Pi                                        |
 | Screen Rotation 2 | The rotation of screen 2                                                     |
 

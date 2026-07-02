@@ -247,8 +247,8 @@ while True:
         "PresenterUrl2", "https://rrdev.brycelongacre.com/kiosk/"
     )
 
-    print(PresenterUrl)
-    print(PresenterUrl2)
+    print("PresenterUrl: ", PresenterUrl)
+    print("PresenterUrl2: ",PresenterUrl2)
 
     # screen 1 options
     options1 = webdriver.ChromeOptions()
