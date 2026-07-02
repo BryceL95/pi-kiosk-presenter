@@ -43,7 +43,6 @@ def generate_short_id(prefix="K"):
     short_num = int(h, 16) % 10000
     return f"{prefix}-{short_num:04d}"
 
-
 def get_or_create_device_id():
     if os.path.exists(DEVICE_ID_FILE):
         with open(DEVICE_ID_FILE, "r") as f:
@@ -79,6 +78,18 @@ def get_local_ip():
     finally:
         s.close()
 
+def set_resolution_wayland(display_name, width, height, rate=60):
+    """
+    Changes screen resolution on Wayland-based Raspberry Pi OS.
+    Common display_name is 'HDMI-A-1' or 'HDMI-A-2'.
+    """
+    command = f"wlr-randr --output {display_name} --mode {width}x{height}@{rate}Hz"
+    try:
+        subprocess.run(command, shell=True, check=True)
+        print(f"Resolution changed to {width}x{height} at {rate}Hz")
+    except subprocess.CalledProcessError as e:
+        print(f"Failed to change resolution: {e}")
+
 DEVICE_ID_FILE = "deviceID.txt"
 CUSTOMER_ID_FILE = "customerID.txt"
 DEVICE_FW = get_version()
@@ -95,6 +106,10 @@ print("DEVICE_ID:", DEVICE_ID)
 print("USER_ID:", USER_ID)
 print("LOCAL_IP:", LOCAL_IP)
 
+# Example usage (adjust HDMI port name as necessary)
+set_resolution_wayland("HDMI-1", 1920, 1080)
+set_resolution_wayland("HDMI-2", 1920, 1080)
+
 SettingsParsed = []
 PresenterStatus = False
 SettingsCount = 0
@@ -102,9 +117,6 @@ CurrentURL = ""
 CurrentURL2 = ""
 LastRotation = "normal"
 LastRotation2 = "normal"
-
-# output = subprocess.check_output("xrandr", shell=True).decode()
-# print(output)
 
 def PushStatus():
     global SettingsParsed
