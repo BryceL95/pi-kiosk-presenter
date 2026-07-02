@@ -112,7 +112,7 @@ CurrentURL = ""
 CurrentURL2 = ""
 LastRotation = "normal"
 LastRotation2 = "normal"
-LastResolution = ""
+LastResolution = "1920x1080"
 
 def PushStatus():
     global SettingsParsed
@@ -200,8 +200,11 @@ def CheckScreenRotation():
 
 def CheckResolution():
     global LastResolution
-    resolution = CheckSettings("ScreenRotation", "1920x1080")
+    resolution = CheckSettings("Resolution", "1920x1080")
     resXY = resolution.split("x")
+
+    print("resolution", resolution)
+    print("LastResolution", LastResolution)
 
     if resolution != LastResolution:
         set_resolution_x11(resXY[0], resXY[1])
