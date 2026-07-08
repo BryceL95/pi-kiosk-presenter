@@ -4,7 +4,7 @@ A Python script to load a URL in a Chrome browser to act as a presenter screen.
 launcher.py auto-runs when the Pi starts. The git repository will be checked for updates. If there are updates, they will be installed. All requirements will be installed. Once installed, presenter.py will run.
 
 ## Creating an account
-Your Kiosk settings are configured through your browser. Navigate to [rrdev.brycelongacre.com](https://rrdev.brycelongacre.com/login-page.php) and register an account. It is recommended to use your Race Result customer ID when creating your rrdev customer account. You will need this ID during the software setup.
+Your Kiosk settings are configured through your browser. Navigate to [rrdev.brycelongacre.com](https://rrdev.brycelongacre.com/login-page) and register an account. It is recommended to use your Race Result customer ID when creating your rrdev customer account. You will need this ID during the software setup.
 
 ## Hardware
 Recommended hardware: Raspberry Pi 4 or Pi 5.
@@ -34,7 +34,7 @@ bash pi-kiosk-presenter/install.sh
 ```
 
 ## How to configure kiosk settings
-Log into [rrdev.brycelongacre.com/tools-new](https://rrdev.brycelongacre.com/tools-new/) and navigate to Kiosk on the left. Here you will see a list of all Kiosk devices that have connected to your account. Selecting Settings will open a window where you can change settings for the device. Below is a list of settings and what they do.
+Navigate to [rrdev.brycelongacre.com](https://rrdev.brycelongacre.com/) and log in. Once logged in, select Kiosk form the list of tools. Here you will see a list of all Kiosk devices that have connected to your account. Selecting Settings will open a window where you can change settings for the device. Below is a list of settings and what they do.
 
 | Setting Name      | Description                                                                  |
 |-------------------|------------------------------------------------------------------------------|
