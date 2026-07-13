@@ -191,12 +191,10 @@ print("Connected screens:", screens)
 
 def reloadPage():
     print("Manual Browser Reload")
-    DisplayMode = CheckSettings("DisplayMode", "Duplicate")
-    
     driver1.get(PresenterUrl)
     driver1.execute_script("document.body.style.cursor = 'none';")
 
-    if len(screens) >= 2 and DisplayMode == "Extend":
+    if len(screens) >= 2:
         driver2.get(PresenterUrl2)
         driver2.execute_script("document.body.style.cursor = 'none';")
     
@@ -303,6 +301,8 @@ while True:
     PresenterUrl2 = CheckSettings("PresenterUrl2", "https://rrdev.brycelongacre.com/kiosk/")
 
     DisplayMode = CheckSettings("DisplayMode", "Duplicate")
+    if DisplayMode == "Duplicate":
+        PresenterUrl2 = PresenterUrl
 
     if PresenterStatus == False:
         print("Open browser...")
@@ -314,7 +314,7 @@ while True:
         driver1.get(PresenterUrl)
         driver1.execute_script("document.body.style.cursor = 'none';")
 
-        if len(screens) >= 2 and DisplayMode == "Extend":
+        if len(screens) >= 2:
             print("Dual screens")
             
             driver2 = webdriver.Chrome(options=options2)
@@ -328,7 +328,7 @@ while True:
         driver1 = webdriver.Chrome(options=options1)
         driver1.get(PresenterUrl)
         driver1.execute_script("document.body.style.cursor = 'none';")
-    elif PresenterUrl2 != CurrentURL2 and len(screens) >= 2 and DisplayMode == "Extend":
+    elif PresenterUrl2 != CurrentURL2 and len(screens) >= 2:
         print("New url - Browser Reload Screen 2")
         CurrentURL2 = PresenterUrl2
 
