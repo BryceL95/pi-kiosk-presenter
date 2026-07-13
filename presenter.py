@@ -90,6 +90,24 @@ def set_resolution_x11(width, height, display_name):
     except subprocess.CalledProcessError as e:
         print(f"Failed to change resolution: {e}")
 
+def rotate_screen(orientation, screen):
+    print("orientation", orientation)
+    print("screen", screen)
+    try:
+        # Determine the display name (usually HDMI-1 or DSI-1)
+        # You can find yours by running 'xrandr' in the terminal
+        display_name = "HDMI-1"
+        if screen == 1:
+            display_name = "HDMI-1"
+        elif screen == 2:
+            display_name = "HDMI-2"
+        
+        command = ["xrandr", "--output", display_name, "--rotate", orientation]
+        subprocess.run(command, check=True)
+        print(f"Screen rotated to: {orientation}")
+    except subprocess.CalledProcessError as e:
+        print(f"Error rotating screen: {e}")
+
 def switch_display_mode(mode):
     # Replace these with your actual monitor names from 'xrandr -q'
     primary_display = "HDMI-1"
@@ -121,6 +139,62 @@ def switch_display_mode(mode):
         print(f"Successfully switched to {mode} mode.")
     except subprocess.CalledProcessError as e:
         print(f"Failed to change screen mode: {e}")
+
+def configure_displays():
+    """
+    Reads display settings and applies resolution, rotation, and display
+    mode for both screens in a single xrandr command.
+ 
+    A single atomic xrandr call avoids the flicker/re-modeset you get when
+    chaining separate calls for resolution, rotation, and placement.
+    """
+    resolution1 = CheckSettings("Resolution", "1920x1080")
+    resolution2 = CheckSettings("Resolution2", "1920x1080")
+    rotation1 = CheckSettings("ScreenRotation", "normal")
+    rotation2 = CheckSettings("ScreenRotation2", "normal")
+    display_mode = CheckSettings("DisplayMode", "Extend")
+ 
+    primary_display = "HDMI-1"
+    secondary_display = "HDMI-2"
+ 
+    # Screen 1 arguments
+    command = [
+        "xrandr",
+        "--output", primary_display,
+        "--mode", resolution1,
+        "--rotate", rotation1,
+    ]
+ 
+    # Screen 2 arguments depend on the display mode
+    if display_mode == "Duplicate":
+        # Mirror screen 1. Use screen 1's resolution and rotation so the
+        # clone matches exactly -- mismatched modes cause scaling/panning.
+        command += [
+            "--output", secondary_display,
+            "--mode", resolution1,
+            "--rotate", rotation1,
+            "--same-as", primary_display,
+        ]
+    elif display_mode == "Extend":
+        command += [
+            "--output", secondary_display,
+            "--mode", resolution2,
+            "--rotate", rotation2,
+            "--right-of", primary_display,
+        ]
+    else:
+        print(f"Invalid DisplayMode '{display_mode}'. Use 'Extend' or 'Duplicate'.")
+        return
+ 
+    try:
+        subprocess.run(command, check=True)
+        print(f"Displays configured: {display_mode} mode, "
+              f"{primary_display} {resolution1}/{rotation1}, "
+              f"{secondary_display} "
+              f"{resolution1 if display_mode == 'Duplicate' else resolution2}/"
+              f"{rotation1 if display_mode == 'Duplicate' else rotation2}")
+    except subprocess.CalledProcessError as e:
+        print(f"Failed to configure displays: {e}")
 
 def CheckSettings(setting, default):
     if SettingsParsed and setting in SettingsParsed and SettingsParsed[setting] != "":
@@ -197,24 +271,6 @@ def reloadPage():
     if len(screens) >= 2:
         driver2.get(PresenterUrl2)
         driver2.execute_script("document.body.style.cursor = 'none';")
-    
-def rotate_screen(orientation, screen):
-    print("orientation", orientation)
-    print("screen", screen)
-    try:
-        # Determine the display name (usually HDMI-1 or DSI-1)
-        # You can find yours by running 'xrandr' in the terminal
-        display_name = "HDMI-1"
-        if screen == 1:
-            display_name = "HDMI-1"
-        elif screen == 2:
-            display_name = "HDMI-2"
-        
-        command = ["xrandr", "--output", display_name, "--rotate", orientation]
-        subprocess.run(command, check=True)
-        print(f"Screen rotated to: {orientation}")
-    except subprocess.CalledProcessError as e:
-        print(f"Error rotating screen: {e}")
 
 def CheckScreenRotation():
     global LastRotation
@@ -257,9 +313,10 @@ def CheckDisplayMode():
 
 # First boot, push status then get settings
 PushStatus()
-CheckScreenRotation()
-CheckResolution()
-CheckDisplayMode()
+# CheckScreenRotation()
+# CheckResolution()
+# CheckDisplayMode()
+configure_displays()
 time.sleep(0.5)
 
 while True:
@@ -268,9 +325,10 @@ while True:
     if SettingsCount == 10:
         SettingsCount = 0
         PushStatus()
-        CheckScreenRotation()
-        CheckResolution()
-        CheckDisplayMode()
+        # CheckScreenRotation()
+        # CheckResolution()
+        # CheckDisplayMode()
+        configure_displays()
         time.sleep(0.5)
 
     # screen 1 options
