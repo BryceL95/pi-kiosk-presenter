@@ -144,11 +144,11 @@ PresenterStatus = False
 SettingsCount = 0
 CurrentURL = ""
 CurrentURL2 = ""
-LastRotation = "normal"
-LastRotation2 = "normal"
-LastResolution = "1920x1080"
-LastResolution2 = "1920x1080"
-LastDisplayMode = "Duplicate"
+LastRotation = ""
+LastRotation2 = ""
+LastResolution = ""
+LastResolution2 = ""
+LastDisplayMode = ""
 
 def PushStatus():
     global SettingsParsed
