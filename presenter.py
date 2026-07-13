@@ -90,6 +90,39 @@ def set_resolution_x11(width, height, display_name):
     except subprocess.CalledProcessError as e:
         print(f"Failed to change resolution: {e}")
 
+def switch_display_mode(mode):
+    # Replace these with your actual monitor names from 'xrandr -q'
+    primary_display = "HDMI-1"
+    secondary_display = "HDMI-2"
+    
+    if mode == "Extend":
+        # Extend: Place HDMI-2 to the right of HDMI-1
+        command = [
+            "xrandr", 
+            "--output", primary_display, "--auto",
+            "--output", secondary_display, "--auto", "--right-of", primary_display
+        ]
+        
+    elif mode == "Duplicate":
+        # Duplicate/Mirror: Make HDMI-2 clone HDMI-1
+        command = [
+            "xrandr", 
+            "--output", primary_display, "--auto",
+            "--output", secondary_display, "--auto", "--same-as", primary_display
+        ]
+        
+    else:
+        print("Invalid mode. Use 'Extend' or 'Duplicate'")
+        return
+
+    # Execute the command
+    try:
+        subprocess.run(command, check=True)
+        print(f"Successfully switched to {mode} mode.")
+    except subprocess.CalledProcessError as e:
+        print(f"Failed to change screen mode: {e}")
+
+
 DEVICE_ID_FILE = "deviceID.txt"
 CUSTOMER_ID_FILE = "customerID.txt"
 DEVICE_FW = get_version()
@@ -115,6 +148,7 @@ LastRotation = "normal"
 LastRotation2 = "normal"
 LastResolution = "1920x1080"
 LastResolution2 = "1920x1080"
+LastDisplayMode = "Duplicate"
 
 def PushStatus():
     global SettingsParsed
@@ -214,10 +248,19 @@ def CheckResolution():
         set_resolution_x11(resXY2[0], resXY2[1], "HDMI-2")
         LastResolution2 = resolution2
 
+def CheckDisplayMode():
+    global LastDisplayMode
+    DisplayMode = CheckSettings("DisplayMode", "Duplicate")
+
+    if DisplayMode != LastDisplayMode:
+        switch_display_mode(DisplayMode)
+        LastDisplayMode = DisplayMode
+
 # First boot, push status then get settings
 PushStatus()
 CheckScreenRotation()
 CheckResolution()
+CheckDisplayMode()
 time.sleep(0.5)
 
 while True:
@@ -228,6 +271,7 @@ while True:
         PushStatus()
         CheckScreenRotation()
         CheckResolution()
+        CheckDisplayMode()
         time.sleep(0.5)
 
     # screen 1 options
