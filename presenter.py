@@ -122,6 +122,13 @@ def switch_display_mode(mode):
     except subprocess.CalledProcessError as e:
         print(f"Failed to change screen mode: {e}")
 
+def CheckSettings(setting, default):
+    if SettingsParsed and setting in SettingsParsed and SettingsParsed[setting] != "":
+        print(f"{setting}: ", SettingsParsed[setting])
+        return SettingsParsed[setting]
+    else:
+        print(f"{setting}: ", default)
+        return default
 
 DEVICE_ID_FILE = "deviceID.txt"
 CUSTOMER_ID_FILE = "customerID.txt"
@@ -184,20 +191,14 @@ print("Connected screens:", screens)
 
 def reloadPage():
     print("Manual Browser Reload")
+    DisplayMode = CheckSettings("DisplayMode", "Duplicate")
+    
     driver1.get(PresenterUrl)
     driver1.execute_script("document.body.style.cursor = 'none';")
 
-    if len(screens) >= 2:
+    if len(screens) >= 2 and DisplayMode == "Extend":
         driver2.get(PresenterUrl2)
         driver2.execute_script("document.body.style.cursor = 'none';")
-
-def CheckSettings(setting, default):
-    if SettingsParsed and setting in SettingsParsed and SettingsParsed[setting] != "":
-        print(f"{setting}: ", SettingsParsed[setting])
-        return SettingsParsed[setting]
-    else:
-        print(f"{setting}: ", default)
-        return default
     
 def rotate_screen(orientation, screen):
     print("orientation", orientation)
@@ -301,6 +302,8 @@ while True:
     PresenterUrl = CheckSettings("PresenterUrl", "https://rrdev.brycelongacre.com/kiosk/")
     PresenterUrl2 = CheckSettings("PresenterUrl2", "https://rrdev.brycelongacre.com/kiosk/")
 
+    DisplayMode = CheckSettings("DisplayMode", "Duplicate")
+
     if PresenterStatus == False:
         print("Open browser...")
         CurrentURL = PresenterUrl
@@ -311,7 +314,7 @@ while True:
         driver1.get(PresenterUrl)
         driver1.execute_script("document.body.style.cursor = 'none';")
 
-        if len(screens) >= 2:
+        if len(screens) >= 2 and DisplayMode == "Extend":
             print("Dual screens")
             
             driver2 = webdriver.Chrome(options=options2)
@@ -325,7 +328,7 @@ while True:
         driver1 = webdriver.Chrome(options=options1)
         driver1.get(PresenterUrl)
         driver1.execute_script("document.body.style.cursor = 'none';")
-    elif PresenterUrl2 != CurrentURL2 and len(screens) >= 2:
+    elif PresenterUrl2 != CurrentURL2 and len(screens) >= 2 and DisplayMode == "Extend":
         print("New url - Browser Reload Screen 2")
         CurrentURL2 = PresenterUrl2
 
