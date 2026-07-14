@@ -315,6 +315,9 @@ while True:
             driver2.execute_script("document.body.style.cursor = 'none';")
 
         if configure_displays.last_mode != DisplayMode:
+            print("Focus browser windows")
+            print(configure_displays.last_mode)
+            print(DisplayMode)
             driver1.maximize_window()
             driver2.maximize_window()
 
