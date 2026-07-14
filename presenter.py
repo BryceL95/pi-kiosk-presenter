@@ -18,6 +18,8 @@ subprocess.run(["xset", "s", "off"])
 subprocess.run(["xset", "-dpms"])
 subprocess.run(["xset", "s", "noblank"])
 
+ScreenUpdated = False
+
 button = Button(17)
 
 def get_device_model():
@@ -78,13 +80,15 @@ def get_local_ip():
     finally:
         s.close()
 
+
 def configure_displays():
     """
     Reads display settings and applies resolution, rotation, and display
     mode for both screens in a single xrandr command.
  
-    A single atomic xrandr call avoids the flicker/re-modeset you get when
-    chaining separate calls for resolution, rotation, and placement.
+    Keeps track of the last DisplayMode it applied. Returns True when the
+    mode loaded from settings differs from the last one applied (e.g.
+    Duplicate -> Extend), otherwise False.
     """
     resolution1 = CheckSettings("Resolution", "1920x1080")
     resolution2 = CheckSettings("Resolution2", "1920x1080")
@@ -122,7 +126,7 @@ def configure_displays():
         ]
     else:
         print(f"Invalid DisplayMode '{display_mode}'. Use 'Extend' or 'Duplicate'.")
-        return
+        return False
  
     try:
         subprocess.run(command, check=True)
@@ -133,6 +137,21 @@ def configure_displays():
               f"{rotation1 if display_mode == 'Duplicate' else rotation2}")
     except subprocess.CalledProcessError as e:
         print(f"Failed to configure displays: {e}")
+        return False
+ 
+    # Compare against the last mode this function applied
+    mode_changed = (
+        configure_displays.last_mode is not None
+        and configure_displays.last_mode != display_mode
+    )
+    configure_displays.last_mode = display_mode
+ 
+    return mode_changed
+ 
+ 
+# Tracks the last DisplayMode applied during this run of the launcher.
+configure_displays.last_mode = None
+
 
 def CheckSettings(setting, default):
     if SettingsParsed and setting in SettingsParsed and SettingsParsed[setting] != "":
@@ -294,6 +313,11 @@ while True:
             driver2 = webdriver.Chrome(options=options2)
             driver2.get(PresenterUrl2)
             driver2.execute_script("document.body.style.cursor = 'none';")
+
+        if configure_displays.last_mode != DisplayMode:
+            driver1.maximize_window()
+            driver2.maximize_window()
+
         time.sleep(1)
 
     button.when_pressed = reloadPage
