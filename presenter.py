@@ -148,6 +148,8 @@ def configure_displays():
  
     return mode_changed
 
+configure_displays.last_mode = None
+
 
 def CheckSettings(setting, default):
     if SettingsParsed and setting in SettingsParsed and SettingsParsed[setting] != "":
