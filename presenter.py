@@ -78,68 +78,6 @@ def get_local_ip():
     finally:
         s.close()
 
-def set_resolution_x11(width, height, display_name):
-    """
-    Changes screen resolution on X11-based Raspberry Pi OS.
-    """
-    # command = f"xrandr --size {width}x{height}"
-    command = f"xrandr --output {display_name} --mode {width}x{height}"
-    try:
-        subprocess.run(command, shell=True, check=True)
-        print(f"Resolution shifted to {width}x{height}")
-    except subprocess.CalledProcessError as e:
-        print(f"Failed to change resolution: {e}")
-
-def rotate_screen(orientation, screen):
-    print("orientation", orientation)
-    print("screen", screen)
-    try:
-        # Determine the display name (usually HDMI-1 or DSI-1)
-        # You can find yours by running 'xrandr' in the terminal
-        display_name = "HDMI-1"
-        if screen == 1:
-            display_name = "HDMI-1"
-        elif screen == 2:
-            display_name = "HDMI-2"
-        
-        command = ["xrandr", "--output", display_name, "--rotate", orientation]
-        subprocess.run(command, check=True)
-        print(f"Screen rotated to: {orientation}")
-    except subprocess.CalledProcessError as e:
-        print(f"Error rotating screen: {e}")
-
-def switch_display_mode(mode):
-    # Replace these with your actual monitor names from 'xrandr -q'
-    primary_display = "HDMI-1"
-    secondary_display = "HDMI-2"
-    
-    if mode == "Extend":
-        # Extend: Place HDMI-2 to the right of HDMI-1
-        command = [
-            "xrandr", 
-            "--output", primary_display, "--auto",
-            "--output", secondary_display, "--auto", "--right-of", primary_display
-        ]
-        
-    elif mode == "Duplicate":
-        # Duplicate/Mirror: Make HDMI-2 clone HDMI-1
-        command = [
-            "xrandr", 
-            "--output", primary_display, "--auto",
-            "--output", secondary_display, "--auto", "--same-as", primary_display
-        ]
-        
-    else:
-        print("Invalid mode. Use 'Extend' or 'Duplicate'")
-        return
-
-    # Execute the command
-    try:
-        subprocess.run(command, check=True)
-        print(f"Successfully switched to {mode} mode.")
-    except subprocess.CalledProcessError as e:
-        print(f"Failed to change screen mode: {e}")
-
 def configure_displays():
     """
     Reads display settings and applies resolution, rotation, and display
@@ -272,52 +210,13 @@ def reloadPage():
         driver2.get(PresenterUrl2)
         driver2.execute_script("document.body.style.cursor = 'none';")
 
-def CheckScreenRotation():
-    global LastRotation
-    global LastRotation2
-    rotation = CheckSettings("ScreenRotation", "normal")
-    rotation2 = CheckSettings("ScreenRotation2", "normal")
-
-    if rotation != LastRotation:
-        rotate_screen(rotation, 1)
-        LastRotation = rotation
-
-    if rotation2 != LastRotation2:
-        rotate_screen(rotation2, 2)
-        LastRotation2 = rotation2
-
-def CheckResolution():
-    global LastResolution
-    global LastResolution2
-    resolution = CheckSettings("Resolution", "1920x1080")
-    resXY = resolution.split("x")
-
-    resolution2 = CheckSettings("Resolution2", "1920x1080")
-    resXY2 = resolution2.split("x")
-
-    if resolution != LastResolution:
-        set_resolution_x11(resXY[0], resXY[1], "HDMI-1")
-        LastResolution = resolution
-
-    if resolution2 != LastResolution2:
-        set_resolution_x11(resXY2[0], resXY2[1], "HDMI-2")
-        LastResolution2 = resolution2
-
-def CheckDisplayMode():
-    global LastDisplayMode
-    DisplayMode = CheckSettings("DisplayMode", "Duplicate")
-
-    if DisplayMode != LastDisplayMode:
-        switch_display_mode(DisplayMode)
-        LastDisplayMode = DisplayMode
-
-# First boot, push status then get settings
+# First boot, push status, get settings, update display
 PushStatus()
 # CheckScreenRotation()
 # CheckResolution()
 # CheckDisplayMode()
 configure_displays()
-time.sleep(0.5)
+time.sleep(2)
 
 while True:
     print("SettingsCount", SettingsCount)
@@ -329,7 +228,7 @@ while True:
         # CheckResolution()
         # CheckDisplayMode()
         configure_displays()
-        time.sleep(0.5)
+        time.sleep(2)
 
     # screen 1 options
     options1 = webdriver.ChromeOptions()
