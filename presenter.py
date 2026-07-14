@@ -318,8 +318,7 @@ while True:
         if UpdateDisplay == True:
             print("Focus browser windows")
             UpdateDisplay = False
-            driver1.maximize_window()
-            driver2.maximize_window()
+            driver1.switch_to.window(driver1.window_handles[-1])
 
         time.sleep(1)
 
