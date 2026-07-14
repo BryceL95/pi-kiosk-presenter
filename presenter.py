@@ -234,6 +234,8 @@ PushStatus()
 configure_displays()
 time.sleep(0.5)
 
+UpdateDisplay = True
+
 while True:
     print("SettingsCount", SettingsCount)
 
@@ -243,7 +245,7 @@ while True:
         # CheckScreenRotation()
         # CheckResolution()
         # CheckDisplayMode()
-        test = configure_displays()
+        UpdateDisplay = configure_displays()
         time.sleep(0.5)
 
     # screen 1 options
@@ -311,10 +313,11 @@ while True:
             driver2.get(PresenterUrl2)
             driver2.execute_script("document.body.style.cursor = 'none';")
 
-        print(test)
+        print(UpdateDisplay)
 
-        if test == True:
+        if UpdateDisplay == True:
             print("Focus browser windows")
+            UpdateDisplay = False
             driver1.maximize_window()
             driver2.maximize_window()
 
