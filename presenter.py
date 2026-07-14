@@ -147,10 +147,6 @@ def configure_displays():
     configure_displays.last_mode = display_mode
  
     return mode_changed
- 
- 
-# Tracks the last DisplayMode applied during this run of the launcher.
-configure_displays.last_mode = None
 
 
 def CheckSettings(setting, default):
@@ -186,7 +182,6 @@ LastRotation = ""
 LastRotation2 = ""
 LastResolution = ""
 LastResolution2 = ""
-LastDisplayMode = ""
 
 def PushStatus():
     global SettingsParsed
@@ -235,7 +230,7 @@ PushStatus()
 # CheckResolution()
 # CheckDisplayMode()
 configure_displays()
-time.sleep(2)
+time.sleep(0.5)
 
 while True:
     print("SettingsCount", SettingsCount)
@@ -246,8 +241,8 @@ while True:
         # CheckScreenRotation()
         # CheckResolution()
         # CheckDisplayMode()
-        configure_displays()
-        time.sleep(2)
+        lastDisplayMode = configure_displays()
+        time.sleep(0.5)
 
     # screen 1 options
     options1 = webdriver.ChromeOptions()
@@ -314,10 +309,10 @@ while True:
             driver2.get(PresenterUrl2)
             driver2.execute_script("document.body.style.cursor = 'none';")
 
-        print(configure_displays.last_mode)
+        print(lastDisplayMode)
         print(DisplayMode)
 
-        if configure_displays.last_mode != DisplayMode:
+        if lastDisplayMode != DisplayMode:
             print("Focus browser windows")
             driver1.maximize_window()
             driver2.maximize_window()
