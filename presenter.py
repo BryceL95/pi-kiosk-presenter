@@ -196,16 +196,6 @@ def configure_displays():
     except subprocess.CalledProcessError as e:
         print(f"Failed to configure displays: {e}")
 
-def raise_browser():
-    time.sleep(1)  # let the WM settle after the mode change
-    try:
-        subprocess.run(
-            ["wmctrl", "-x", "-r", "chromium", "-b", "add,fullscreen,above"],
-            check=True
-        )
-    except subprocess.CalledProcessError as e:
-        print(f"Failed to raise browser window: {e}")
-
 def CheckSettings(setting, default):
     if SettingsParsed and setting in SettingsParsed and SettingsParsed[setting] != "":
         print(f"{setting}: ", SettingsParsed[setting])
@@ -327,7 +317,6 @@ PushStatus()
 # CheckResolution()
 # CheckDisplayMode()
 configure_displays()
-raise_browser()
 time.sleep(0.5)
 
 while True:
@@ -340,7 +329,6 @@ while True:
         # CheckResolution()
         # CheckDisplayMode()
         configure_displays()
-        raise_browser()
         time.sleep(0.5)
 
     # screen 1 options
