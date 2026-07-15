@@ -16,7 +16,7 @@ It is recommended to add the DS3231 Real Time Clock module so the Pi can keep ac
 
 Optional, a button can be added between GPIO 17 (pin 11 on the Pi) and Ground. This button will reload the browser when pressed.
 
-This [Raspberry Pi 4 Case](https://www.amazon.com/dp/B07Y7W3GFH?ref_=ppx_hzsearch_conn_dt_b_fed_asin_title_2) can be used with the [Kiosk Pi Case.STL](</assets/3D_Files/Kiosk Pi Case.STL>) to add a button to Pi4 easily.
+This [Raspberry Pi 4 Case](https://www.amazon.com/dp/B07Y7W3GFH?ref_=ppx_hzsearch_conn_dt_b_fed_asin_title_2) can be used with the [Kiosk Pi Case.STL](</assets/3D_Files/STL/Kiosk Pi Case.STL>) to add a button to Pi4 easily.
 
 ![Pi4 Case Top](/assets/images/CaseTop.png)
 
